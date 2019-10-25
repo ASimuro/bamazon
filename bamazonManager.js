@@ -1,13 +1,14 @@
 var mysql = require('mysql');
 var inquirer = require('inquirer');
+require("dotenv").config();
+var keys = require("./keys.js");
 
 //Connect to database
-var connection = mysql.createConnection
-({
+var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
-    user: "root",
-    password: "root",
+    user: keys.user,
+    password: keys.password,
     database: "bamazon"
 });
 
@@ -56,7 +57,6 @@ function inventoryView()
 
 
 //View Low Inventory
-
 function lowInventory() 
 {
     connection.query("SELECT * FROM products WHERE stock_quantity < 5", function(err, result) 
@@ -74,7 +74,6 @@ function lowInventory()
    
 
 //Add Inventory
-
 function updateInventory() 
 {
     inquirer.prompt([
@@ -103,12 +102,8 @@ function updateInventory()
 }
 
 
-//=================================Add New Product===============================
-
+//Add New Product
 function addProduct() {
-
-//ask user to fill in all necessary information to fill columns in table
-
     inquirer.prompt([
         {
         type: "input",
@@ -118,7 +113,7 @@ function addProduct() {
         {
         type: "input",
         name: "inputDepartment",
-        message: "Enter the department name the new product is in.",
+        message: "Enter the department name of the new product.",
         },
         {
         type: "input",
@@ -132,7 +127,7 @@ function addProduct() {
         }
     ]).then(function(newProduct)
     {
-      //connect to database, insert column data with input from user
+      //connect to database, insert column
       connection.query("INSERT INTO products SET ?", 
       {
         product_name: newProduct.inputName,
